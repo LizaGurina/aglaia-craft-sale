@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Aglaia's Craft Sale</title>
+  <meta name="description" content="Aglaia turns 8! Craft sale party on Sunday 22 November, 14:00–18:00, Porto Salvo.">
+  <meta property="og:title" content="You're invited to Aglaia's Craft Sale! 🎨">
+  <meta property="og:description" content="Aglaia turns 8 · Sun 22 Nov · 14:00–18:00 · Porto Salvo">
+  <meta property="og:url" content="https://lizagurina.github.io/aglaia-craft-sale/">
+  <meta property="og:image" content="https://lizagurina.github.io/aglaia-craft-sale/assets/aglaia-portrait.jpg">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#9CD3EC">
+  <link rel="icon" href="assets/st/starfish-orange.png?v=23">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Patrick+Hand&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=23">
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+  <!-- Hand-painted edges for brush strokes and paper -->
+  <svg class="defs" aria-hidden="true">
+    <defs>
+      <filter id="rough" x="-10%" y="-25%" width="120%" height="150%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.025 0.07" numOctaves="3" seed="7" result="n"/>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="11" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <filter id="deckle" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="3" seed="11" result="n"/>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <symbol id="boat-shape" viewBox="0 0 120 112">
+        <clipPath id="sail-clip"><path d="M63.5 14 C88 30 101 54 105 76 L63.5 76 Z"/></clipPath>
+        <rect x="58" y="5" width="3.6" height="78" rx="1.6" fill="#8A5A34"/>
+        <path d="M61.5 6 L77 10.5 L61.5 15 Z" style="fill: var(--flag, #F0407F)"/>
+        <path d="M63.5 14 C88 30 101 54 105 76 L63.5 76 Z" style="fill: var(--sail)"/>
+        <g clip-path="url(#sail-clip)" stroke="#fff" stroke-opacity=".6" stroke-width="6"><path d="M60 38 H110 M60 58 H110"/></g>
+        <path d="M63.5 14 C88 30 101 54 105 76" fill="none" stroke="rgba(0,0,0,.14)" stroke-width="2"/>
+        <path d="M55.5 20 C44 38 33 57 25 74 L55.5 74 Z" fill="#FFF8EC"/>
+        <path d="M55.5 20 C44 38 33 57 25 74" fill="none" stroke="rgba(0,0,0,.1)" stroke-width="2"/>
+        <path d="M7 80 H113 Q107 102 88 104 H32 Q13 102 7 80 Z" style="fill: var(--c)"/>
+        <path d="M7 80 H113 L111.5 85.5 H8.5 Z" fill="#fff" fill-opacity=".65"/>
+        <path d="M15 96 Q23 103 34 104 H87 Q99 103 107 94" fill="none" stroke="rgba(0,0,0,.16)" stroke-width="3"/>
+        <path d="M2 106 q9 -5 18 0 t18 0 t18 0 t18 0 t18 0 t18 0" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-opacity=".9"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <p class="demo-banner" id="demo-banner" hidden>
+    Demo mode: answers are saved only in this browser. Connect the Google Sheet (README, step 1) to share them.
+  </p>
+
+  <main>
+    <!-- ============ HERO: sunset sky → sea → beach ============ -->
+    <header class="hero" id="party">
+      <div class="sky">
+        <img class="st palm palm-l" src="assets/st/palm-frond.png?v=23" alt="" aria-hidden="true">
+        <img class="st palm palm-r" src="assets/st/monstera.png?v=23" alt="" aria-hidden="true">
+        <img class="st cloud cloud-1" src="assets/st/clouds.png?v=23" alt="" aria-hidden="true">
+        <img class="st cloud cloud-2" src="assets/st/clouds.png?v=23" alt="" aria-hidden="true">
+        <img class="st sun" src="assets/st/sun.png?v=23" alt="" aria-hidden="true">
+        <img class="st float hero-pencils" src="assets/st/pencils.png?v=23" alt="" aria-hidden="true">
+        <img class="st float hero-scissors" src="assets/st/scissors.png?v=23" alt="" aria-hidden="true">
+        <img class="st float heart h1" src="assets/st/heart-a.png?v=23" alt="" aria-hidden="true">
+        <img class="st float heart h2" src="assets/st/heart-c.png?v=23" alt="" aria-hidden="true">
+        <img class="st float heart h3" src="assets/st/heart-b.png?v=23" alt="" aria-hidden="true">
+        <img class="st float heart h4" src="assets/st/heart-d.png?v=23" alt="" aria-hidden="true">
+        <img class="st float hero-star" src="assets/st/star-yellow2.png?v=23" alt="" aria-hidden="true">
+        <span class="dashes d1" aria-hidden="true"></span>
+        <span class="dashes d2" aria-hidden="true"></span>
+
+        <div class="wrap sky-inner">
+          <svg class="invited" viewBox="0 0 420 92" role="img" aria-label="You're invited to">
+            <path id="arc" d="M30 86 Q210 4 390 86" fill="none"/>
+            <text><textPath href="#arc" startOffset="50%" text-anchor="middle">You're invited to</textPath></text>
+          </svg>
+          <h1 class="title">
+            <span class="name">Aglaia's</span>
+            <span class="craft" aria-label="Craft Sale!"><span aria-hidden="true"><span style="--c:#F0407F;--d:#B91E5A;--r:-7deg">C</span><span style="--c:#FF8A2A;--d:#C9600F;--r:5deg">r</span><span style="--c:#FFC22E;--d:#D69400;--r:-3deg">a</span><span style="--c:#3DB66F;--d:#23864C;--r:6deg">f</span><span style="--c:#1E9BD7;--d:#136F9E;--r:-5deg">t</span></span>
+              <span aria-hidden="true"><span style="--c:#8E3FC2;--d:#62238D;--r:-6deg">S</span><span style="--c:#A24DD1;--d:#6E2A99;--r:4deg">a</span><span style="--c:#17A9A6;--d:#0E7A78;--r:-4deg">l</span><span style="--c:#FFC22E;--d:#D69400;--r:7deg">e</span><span style="--c:#8E3FC2;--d:#62238D;--r:10deg">!</span></span></span>
+          </h1>
+        </div>
+      </div>
+
+      <div class="sea">
+        <!-- The menu: boats sailing on the sea. They dock at the top of the screen once you scroll past. -->
+        <nav class="boats" aria-label="Sections">
+          <a class="boat" href="#party" style="--x:10.5%;--y:32%;--mx:14%;--my:22%;--c:#F7B21E;--sail:#FFE07A;--flag:#F0407F;--fg:#4A2A10">
+            <svg viewBox="0 0 120 112" aria-hidden="true"><use href="#boat-shape"/></svg><span>Party</span></a>
+          <a class="boat" href="#rules" style="--x:20%;--y:80%;--mx:27%;--my:80%;--c:#8E3FC2;--sail:#D7B3F2;--flag:#FFC22E">
+            <svg viewBox="0 0 120 112" aria-hidden="true"><use href="#boat-shape"/></svg><span>Rules</span></a>
+          <a class="boat" href="#wishlist" style="--x:49%;--y:22%;--mx:50%;--my:20%;--c:#F2574B;--sail:#FFB3AA;--flag:#14A6B8">
+            <svg viewBox="0 0 120 112" aria-hidden="true"><use href="#boat-shape"/></svg><span>Wishlist</span></a>
+          <a class="boat boat-long" href="#rsvp" style="--x:75%;--y:70%;--mx:73%;--my:77%;--c:#0E8FA0;--sail:#9FE3E8;--flag:#F0407F">
+            <svg viewBox="0 0 120 112" aria-hidden="true"><use href="#boat-shape"/></svg><span>Are you coming?</span></a>
+          <a class="boat" href="#maker" style="--x:94%;--y:52%;--mx:86%;--my:21%;--c:#E8337A;--sail:#FBC2D8;--flag:#8E3FC2">
+            <svg viewBox="0 0 120 112" aria-hidden="true"><use href="#boat-shape"/></svg><span>Aglaia</span></a>
+        </nav>
+        <span class="wave-lines w1" aria-hidden="true"></span>
+        <span class="wave-lines w2" aria-hidden="true"></span>
+        <p class="years"><span aria-hidden="true">♥</span> 8 years <span aria-hidden="true">♥</span></p>
+      </div>
+
+      <div class="shore sand">
+        <span class="foam" aria-hidden="true"></span>
+        <img class="st float shore-star" src="assets/st/starfish-orange.png?v=23" alt="" aria-hidden="true">
+        <img class="st shore-shell" src="assets/st/shell-pink.png?v=23" alt="" aria-hidden="true">
+        <img class="st shore-shell2" src="assets/st/shell-small.png?v=23" alt="" aria-hidden="true">
+        <img class="st sway shore-leaf" src="assets/st/leaf-d.png?v=23" alt="" aria-hidden="true">
+        <img class="st shore-papers" src="assets/st/papers.png?v=23" alt="" aria-hidden="true">
+        <img class="st sway shore-leaf2" src="assets/st/leaf-a.png?v=23" alt="" aria-hidden="true">
+
+        <div class="wrap examples">
+          <h3 class="examples-title reveal">This is what a craft sale looks like:</h3>
+          <div class="gallery reveal">
+            <figure class="polaroid tape-teal" style="--rot:-4deg"><img src="assets/market-stall.jpg" alt="Aglaia behind her stall with handmade bracelets, candles and toys" loading="lazy"></figure>
+            <figure class="polaroid tape-purple" style="--rot:-2deg"><img src="assets/market-flowers.jpg" alt="Aglaia at a stall with framed pressed flowers and a bowl of cherry tomatoes" loading="lazy"></figure>
+            <figure class="polaroid tape-yellow" style="--rot:3deg"><img src="assets/market-beads.jpg" alt="Handmade bead bracelets and keychains with 1 € and 2 € price tags" loading="lazy"></figure>
+            <figure class="polaroid tape-pink" style="--rot:5deg"><img src="assets/market-shells.jpg" alt="Golden painted shells and framed shell pictures with small price tags" loading="lazy"></figure>
+            <figure class="polaroid tape-teal" style="--rot:-3deg"><img src="assets/market-room.jpg" alt="Kids selling their crafts at long tables under colourful bunting" loading="lazy"></figure>
+          </div>
+        </div>
+
+        <div class="wrap shore-inner">
+          <div class="welcome reveal">
+            <p class="lead">Come celebrate with us for a day full of crafts, fun and good vibes!</p>
+            <div class="countdown" id="countdown">
+              <p class="cd-title">The party starts in</p>
+              <div class="cd-tiles" role="timer" aria-live="off">
+                <div class="cd-tile" style="--b:var(--pink);--tr:-3deg"><b data-cd="d">–</b><span data-cd-label="d">days</span></div>
+                <div class="cd-tile" style="--b:var(--teal);--tr:2deg"><b data-cd="h">–</b><span data-cd-label="h">hours</span></div>
+                <div class="cd-tile" style="--b:var(--purple);--tr:-2deg"><b data-cd="m">–</b><span data-cd-label="m">minutes</span></div>
+                <div class="cd-tile" style="--b:var(--orange);--tr:3deg"><b data-cd="s">–</b><span data-cd-label="s">seconds</span></div>
+              </div>
+              <p class="cd-done" hidden></p>
+            </div>
+            <div class="cta-row">
+              <a class="btn btn-pink btn-call" href="#rsvp">Let us know you're coming <span aria-hidden="true">♥</span></a>
+              <a class="btn btn-teal" href="#wishlist">See the wishlist</a>
+            </div>
+          </div>
+          <nav class="signpost reveal" aria-label="Jump to a section">
+            <img src="assets/st/signpost.png?v=23" alt="">
+            <a href="#party" style="left:7.8%;top:3.7%;width:76.4%;height:18.2%">Party</a>
+            <a href="#maker" style="left:11.6%;top:21.4%;width:85.3%;height:17.1%">Aglaia</a>
+            <a href="#rules" style="left:22.5%;top:39.6%;width:69.8%;height:15%">Rules</a>
+            <a href="#rsvp" style="left:17.1%;top:55.6%;width:81.4%;height:17.1%">I'm coming</a>
+            <a href="#wishlist" style="left:23.3%;top:72.2%;width:75.2%;height:17.1%">Wishlist</a>
+          </nav>
+
+          <div class="facts reveal">
+            <div class="fact b-pink">
+              <img src="assets/calendar.png" alt="" aria-hidden="true">
+              <span class="label">Date:</span>
+              <strong>22 NOV</strong>
+              <span class="sub">Sunday</span>
+            </div>
+            <div class="fact b-lilac">
+              <img src="assets/clock.png" alt="" aria-hidden="true">
+              <span class="label">Time:</span>
+              <strong>14.00 – 18.00</strong>
+              <span class="sub">come any time</span>
+            </div>
+            <div class="fact fact-addr b-mint">
+              <img src="assets/pin.png" alt="" aria-hidden="true">
+              <span class="label">Address:</span>
+              <span class="addr">Av. Domingos Vandelli 107,<br>2740-123 Porto Salvo</span>
+              <a class="sub-link" id="map" href="https://www.google.com/maps/search/?api=1&amp;query=Av.%20Domingos%20Vandelli%20107%2C%202740-123%20Porto%20Salvo" target="_blank" rel="noopener">open in Maps ↗</a>
+            </div>
+          </div>
+
+          <p class="cal-row reveal">
+            <button class="chip-btn" id="ics" type="button">Add to my calendar</button>
+            <a class="chip-btn" id="gcal" href="#" target="_blank" rel="noopener">Google Calendar ↗</a>
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============ RULES ============ -->
+    <section class="section sand" id="rules">
+      <img class="st sway rules-leaf" src="assets/st/leaf-f.png?v=23" alt="" aria-hidden="true">
+      <img class="st float rules-star" src="assets/st/star-small-yellow.png?v=23" alt="" aria-hidden="true">
+      <div class="wrap">
+        <div class="rules-panel reveal">
+          <img class="st panel-bunting" src="assets/st/bunting.png?v=23" alt="" aria-hidden="true">
+          <h2 class="section-title t-purple"><span class="splash" aria-hidden="true"></span>Rules<span class="splash r" aria-hidden="true"></span></h2>
+          <ol class="rules">
+            <li class="rule">
+              <span class="num" style="--n:var(--pink)">1</span>
+              <div>
+                <h3 class="brush b-pink">If you like crafting…</h3>
+                <p>bring your crafts, set prices and sell!</p>
+              </div>
+              <img class="art float" src="assets/st/stall.png?v=23" alt="" aria-hidden="true">
+            </li>
+            <li class="rule">
+              <span class="num" style="--n:var(--teal)">2</span>
+              <div>
+                <h3 class="brush b-blue">If you don't…</h3>
+                <p>just participate in the market, buy something, or bring something you baked.</p>
+              </div>
+              <span class="art art-pair float" aria-hidden="true"><img src="assets/st/cupcake.png?v=23" alt=""><img src="assets/st/cookie.png?v=23" alt=""></span>
+            </li>
+            <li class="rule rule-ban">
+              <img class="num-img" src="assets/nocart.png" alt="No shopping cart">
+              <div>
+                <h3 class="brush b-yellow">Don't bring things from the supermarket.</h3>
+                <p>Bring what you made, not what you bought.</p>
+              </div>
+              <img class="art float" src="assets/st/glue.png?v=23" alt="" aria-hidden="true">
+            </li>
+            <li class="rule">
+              <span class="num" style="--n:var(--purple)">3</span>
+              <div>
+                <h3 class="brush b-yellow">For parents…</h3>
+                <p>Join our Cocktail Party! Enjoy drinks, good company and a chance to support our young creators!</p>
+              </div>
+              <img class="art float" src="assets/st/cocktail.png?v=23" alt="" aria-hidden="true">
+            </li>
+          </ol>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============ WISHLIST ============ -->
+    <section class="section sand" id="wishlist">
+      <img class="st float wish-yarn" src="assets/st/yarn.png?v=23" alt="" aria-hidden="true">
+      <img class="st float wish-scissors" src="assets/st/scissors.png?v=23" alt="" aria-hidden="true">
+      <img class="st wish-conch" src="assets/st/shell-conch.png?v=23" alt="" aria-hidden="true">
+      <img class="st float wish-star" src="assets/st/star-yellow.png?v=23" alt="" aria-hidden="true">
+      <div class="wrap">
+        <h2 class="section-title t-coral reveal">Aglaia's wishlist</h2>
+        <p class="intro reveal">Pick a present and tap <b>“I'll bring it”</b>: it disappears from the list for everyone else, so nobody brings the same thing. Prices are approximate, from Amazon.</p>
+        <div class="toolbar reveal">
+          <div class="filters" id="gift-cats" role="group" aria-label="Kind of present"></div>
+          <div class="toolbar-row">
+            <div class="filters filters-budget" id="gift-budget" role="group" aria-label="Budget"></div>
+            <div class="seg" role="group" aria-label="Sort by price">
+              <button type="button" data-sort="asc" aria-pressed="true">Cheapest first</button>
+              <button type="button" data-sort="desc" aria-pressed="false">Priciest first</button>
+            </div>
+          </div>
+          <span class="tally" id="gift-tally"></span>
+        </div>
+        <ul class="gifts" id="gifts">
+          <li class="empty">Loading the wishlist…</li>
+        </ul>
+        <div class="more-row" hidden><button class="btn btn-ghost" id="gift-more" type="button" aria-controls="gifts"></button></div>
+      </div>
+    </section>
+
+    <!-- ============ RSVP ============ -->
+    <section class="section sand" id="rsvp">
+      <img class="st float rsvp-umbrella" src="assets/st/umbrella.png?v=23" alt="" aria-hidden="true">
+      <img class="st rsvp-shell" src="assets/st/shell-purple.png?v=23" alt="" aria-hidden="true">
+      <img class="st float rsvp-star" src="assets/st/starfish-blue.png?v=23" alt="" aria-hidden="true">
+      <div class="wrap">
+        <h2 class="section-title t-teal reveal">Are you coming?</h2>
+        <div class="rsvp-grid">
+          <div class="paper counter reveal" aria-live="polite">
+            <img class="st crab" src="assets/st/crab.png?v=23" alt="" aria-hidden="true">
+            <div class="big" id="count-total">–</div>
+            <div class="big-label" id="count-label">guests are coming</div>
+            <ul class="chips">
+              <li style="--c:var(--yellow-soft)"><b id="count-kids">0</b> kids</li>
+              <li style="--c:var(--teal-soft)"><b id="count-adults">0</b> grown-ups</li>
+              <li style="--c:var(--pink-soft)"><b id="count-sellers">0</b> little shops</li>
+            </ul>
+            <p class="small">from <b id="count-families">0</b> families so far</p>
+          </div>
+
+          <form class="paper form reveal" id="rsvp-form" novalidate>
+            <label class="field">Your name (or family name)
+              <input name="name" maxlength="60" autocomplete="name" placeholder="e.g. Maria & Tomás">
+            </label>
+            <div class="steppers">
+              <div class="stepper">
+                <span id="kids-l">Kids</span>
+                <button type="button" data-step="-1" data-for="kids" aria-label="One kid less">−</button>
+                <input name="kids" type="number" inputmode="numeric" min="0" max="10" value="1" aria-labelledby="kids-l">
+                <button type="button" data-step="1" data-for="kids" aria-label="One kid more">+</button>
+              </div>
+              <div class="stepper">
+                <span id="adults-l">Grown-ups</span>
+                <button type="button" data-step="-1" data-for="adults" aria-label="One grown-up less">−</button>
+                <input name="adults" type="number" inputmode="numeric" min="0" max="10" value="1" aria-labelledby="adults-l">
+                <button type="button" data-step="1" data-for="adults" aria-label="One grown-up more">+</button>
+              </div>
+            </div>
+            <label class="sell">
+              <input type="checkbox" name="sells">
+              <span class="sell-box" aria-hidden="true"></span>
+              <span class="sell-text"><b>We'll bring crafts to sell!</b><small>bring your crafts, set prices and sell</small></span>
+              <span class="sell-stall" aria-hidden="true"><img src="assets/st/stall.png" alt=""><i class="sp s1"></i><i class="sp s2"></i><i class="sp s3"></i></span>
+            </label>
+            <label class="field">A note for Aglaia <span class="opt">(optional)</span>
+              <textarea name="message" maxlength="300" rows="2"></textarea>
+            </label>
+            <button type="submit" class="btn btn-pink btn-wide">We'll be there! ♥</button>
+            <p class="form-msg" id="form-msg" role="status"></p>
+          </form>
+
+          <div class="paper done" id="rsvp-done" hidden>
+            <img src="assets/st/cocktail.png?v=23" alt="" aria-hidden="true">
+            <h3>Yay! See you on 22 November!</h3>
+            <p id="rsvp-summary"></p>
+            <div class="cta-row">
+              <button class="btn btn-teal btn-sm" id="rsvp-change" type="button">Change answer</button>
+              <button class="link" id="rsvp-cancel" type="button">We can't come after all</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ABOUT AGLAIA ============ -->
+    <section class="section sand" id="maker">
+      <img class="st sway maker-surf" src="assets/st/surfboard.png?v=23" alt="" aria-hidden="true">
+      <img class="st sway maker-hibiscus" src="assets/st/hibiscus.png?v=23" alt="" aria-hidden="true">
+      <img class="st maker-glasses" src="assets/st/sunglasses.png?v=23" alt="" aria-hidden="true">
+      <img class="st float maker-star" src="assets/st/starfish-red.png?v=23" alt="" aria-hidden="true">
+      <img class="st maker-shell" src="assets/st/shell-snail.png?v=23" alt="" aria-hidden="true">
+      <div class="wrap">
+        <h2 class="section-title t-pink reveal">Our little maker</h2>
+        <div class="photos-big reveal">
+          <figure class="polaroid tape-teal" style="--rot:-4deg">
+            <img src="assets/aglaia-portrait.jpg" alt="Portrait of Aglaia, the birthday girl">
+          </figure>
+          <img class="st float photos-star" src="assets/st/star-yellow.png?v=23" alt="" aria-hidden="true">
+          <figure class="polaroid tape-pink" style="--rot:5deg">
+            <img src="assets/aglaia.jpg" alt="Aglaia sitting on the rocks by the sea, showing a peace sign">
+          </figure>
+        </div>
+        <div class="gallery reveal">
+          <figure class="polaroid tape-teal" style="--rot:-4deg"><img src="assets/maker-pottery.jpg" alt="Aglaia shaping a clay bowl on a potter's wheel" loading="lazy"></figure>
+          <figure class="polaroid tape-yellow" style="--rot:3deg"><img src="assets/maker-weaving.jpg" alt="Aglaia weaving a little figure from twigs and string" loading="lazy"></figure>
+          <figure class="polaroid tape-purple" style="--rot:-2deg"><img src="assets/maker-clay.jpg" alt="Aglaia in an apron next to a clay bowl on the wheel" loading="lazy"></figure>
+          <figure class="polaroid tape-pink" style="--rot:5deg"><img src="assets/maker-skates.jpg" alt="Aglaia on roller skates at the top of a ramp, arms wide" loading="lazy"></figure>
+          <figure class="polaroid tape-teal" style="--rot:-3deg"><img src="assets/aglaia-2.jpg" alt="Aglaia climbing a big old tree" loading="lazy"></figure>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ the sea comes back ============ -->
+  <footer class="footer">
+    <div class="sand footer-sand">
+      <img class="st footer-castle" src="assets/st/sandcastle.png?v=23" alt="" aria-hidden="true">
+      <img class="st footer-chair" src="assets/st/chair.png?v=23" alt="" aria-hidden="true">
+      <img class="st float footer-heart" src="assets/st/heart-c.png?v=23" alt="" aria-hidden="true">
+      <p class="see-you reveal">We can't wait to see you!</p>
+      <p class="hearts" aria-hidden="true"><span class="dash"></span><img src="assets/st/heart-b.png?v=23" alt=""><span class="dash r"></span></p>
+      <p class="small">♥ Aglaia &amp; family</p>
+    </div>
+    <div class="sea sea-end" aria-hidden="true">
+      <span class="foam foam-up"></span>
+      <span class="wave-lines w1"></span>
+      <span class="wave-lines w2"></span>
+    </div>
+  </footer>
+
+  <!-- the wave that washes over the screen when you jump to a section -->
+  <div class="tide" aria-hidden="true">
+    <div class="tide-water"><img class="tide-crest" src="assets/st/wave.png?v=23" alt=""></div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="config.js?v=23"></script>
+  <script src="gifts.js?v=23"></script>
+  <script src="app.js?v=23"></script>
+</body>
+</html>
