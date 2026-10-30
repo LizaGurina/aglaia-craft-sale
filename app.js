@@ -161,10 +161,7 @@
       const parts = { d: Math.floor(left / 86400), h: Math.floor(left % 86400 / 3600), m: Math.floor(left % 3600 / 60), s: left % 60 };
       for (const k in parts) {
         const v = k === 'd' ? String(parts.d) : pad(parts[k]);
-        if (cells[k].textContent !== v) {
-          cells[k].textContent = v;
-          if (k === 's' && !reduceMotion) cells.s.parentElement.animate([{ scale: 1 }, { scale: 1.08 }, { scale: 1 }], { duration: 300 });
-        }
+        if (cells[k].textContent !== v) cells[k].textContent = v;
         $(`[data-cd-label="${k}"]`, box).textContent = names[k] + (parts[k] === 1 ? '' : 's');
       }
       return true;
@@ -353,6 +350,9 @@
     const showDone = !!me && !editing;
     form.hidden = showDone;
     done.hidden = !showDone;
+    // stop the "Are you coming?" nudging once this guest has answered
+    document.documentElement.classList.toggle('rsvp-done', !!me);
+    $('.btn-call').innerHTML = me ? "You're on the guest list <span aria-hidden=\"true\">♥</span>" : "Let us know you're coming <span aria-hidden=\"true\">♥</span>";
     if (!me) return;
     store.set('acs-name', me.name);
     const who = [me.kids && plural(me.kids, 'kid'), me.adults && plural(me.adults, 'grown-up')].filter(Boolean).join(' and ');
