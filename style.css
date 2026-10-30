@@ -783,3 +783,7 @@ section:focus, header:focus { outline: none; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .js .reveal { opacity: 1; translate: none; }
 }
+
+.done .cta-row { justify-content: center; }
+.done-next { margin: 0 0 8px !important; font-family: var(--font-hand); font-size: 22px !important; color: var(--ink-soft); }
+.done-gift { margin-bottom: 18px; padding: 13px 30px; font-size: 19px; }
