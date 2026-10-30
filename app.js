@@ -105,8 +105,7 @@
     const id = link.getAttribute('href').slice(1);
     const target = id && document.getElementById(id);
     if (!target) return;
-    e.preventDefault();
-    history.pushState(null, '', '#' + id);
+    e.preventDefault(); // the address stays clean, so a shared link always opens at the top
     washTo(target);
   });
 
@@ -714,6 +713,21 @@
   }
 
   // ================= start =================
+
+  // Always open at the invitation itself: ignore an old #section link and any remembered scroll position.
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  let userMoved = false;
+  ['touchstart', 'wheel', 'keydown'].forEach(t => addEventListener(t, () => { userMoved = true; }, { once: true, passive: true }));
+  const toTop = () => {
+    const root = document.documentElement, prev = root.style.scrollBehavior;
+    root.style.scrollBehavior = 'auto';
+    scrollTo(0, 0);
+    root.style.scrollBehavior = prev;
+  };
+  toTop();
+  addEventListener('load', () => { if (!userMoved) toTop(); });
+  addEventListener('pageshow', e => { if (e.persisted && !userMoved) toTop(); });
 
   if (api.demo) $('#demo-banner').hidden = false;
   watchScroll();
