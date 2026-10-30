@@ -408,6 +408,7 @@
   });
 
   $('#rsvp-change').addEventListener('click', () => {
+    if (!state?.me?.rsvp) return;
     editing = true;
     fillForm(state.me.rsvp);
     renderRsvp(state.me.rsvp);
