@@ -522,6 +522,37 @@ a { color: var(--teal-dk); }
 .maker-star { left: 4%; bottom: 40px; width: 110px; --fd: -3s; }
 .maker-shell { left: 46%; bottom: 6px; width: 60px; }
 
+/* carousel controls: only on phones and tablets */
+.carousel { position: relative; }
+.car-btn, .car-dots { display: none; }
+/* the two big photos join the Aglaia strip only on phones */
+.only-phone { display: none; }
+@media (max-width: 900px) {
+  .carousel .gallery {
+    --sw: min(70vw, 330px);
+    position: relative; gap: calc((100vw - var(--sw)) / 2 + 12px);
+    padding: 22px calc((100vw - var(--sw)) / 2) 14px;
+  }
+  .carousel .gallery .polaroid { flex: 0 0 var(--sw); scroll-snap-align: center; }
+  .car-btn {
+    display: grid; place-items: center; position: absolute; top: calc(50% - 28px); z-index: 4;
+    width: 40px; height: 40px; border-radius: 50%; border: 0; cursor: pointer; padding: 0;
+    background: rgba(255, 255, 255, .82); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    box-shadow: 0 3px 10px rgba(90, 50, 20, .22);
+    transition: opacity .2s, transform .12s;
+  }
+  .car-btn svg { width: 20px; height: 20px; fill: none; stroke: var(--pink-dk); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+  .car-btn:active { transform: scale(.92); }
+  .car-btn:disabled { opacity: 0; pointer-events: none; }
+  .car-prev { left: 2px; }
+  .car-next { right: 2px; }
+  .photos-big { display: none; }
+  .gallery .only-phone, .car-dots .only-phone { display: block; }
+  .car-dots { display: flex; justify-content: center; gap: 7px; margin-top: 2px; }
+  .car-dots button { width: 9px; height: 9px; padding: 0; border: 0; border-radius: 5px; cursor: pointer; background: rgba(58, 36, 24, .25); transition: width .25s, background .25s; }
+  .car-dots button[aria-current="true"] { width: 24px; background: var(--pink); }
+}
+
 /* ---------- rules panel (the invitation's right half) ---------- */
 .rules-panel { position: relative; isolation: isolate; max-width: 1060px; margin: 14px auto 0; padding: 58px 34px 28px; }
 .rules-panel::before {
@@ -578,7 +609,6 @@ a { color: var(--teal-dk); }
 .fchip[aria-pressed="true"] { background: var(--c); color: #fff; box-shadow: 0 3px 0 color-mix(in srgb, var(--c) 70%, #000); }
 .fchip[aria-pressed="true"] .n { background: rgba(255, 255, 255, .3); color: #fff; }
 .fchip:disabled { opacity: .4; cursor: default; transform: none; }
-.filters-budget .fchip { --c: #C79A62; }
 .gtags { display: flex; flex-wrap: wrap; gap: 4px; margin: 2px 0 0; }
 .gtags span { font-size: 11px; font-weight: 800; letter-spacing: .02em; padding: 1px 8px; border-radius: 999px; color: var(--c); background: color-mix(in srgb, var(--c) 14%, #fff); }
 .gift[hidden] { display: none; }
@@ -661,6 +691,41 @@ a { color: var(--teal-dk); }
 .sea-end .wave-lines { z-index: 1; }
 .foam-up { top: -40px; transform-origin: 50% 50%; scale: 1 -1; }
 
+/* ---------- "Are you coming?" reminder that pops up from the bottom ---------- */
+.nudge-wrap {
+  position: fixed; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 45;
+  transform: translate(-50%, 180%); opacity: 0;
+  transition: transform .55s cubic-bezier(.3, 1.6, .5, 1), opacity .3s;
+}
+.nudge-wrap.show { transform: translate(-50%, 0); opacity: 1; }
+.nudge {
+  position: relative; display: flex; align-items: center; gap: 10px;
+  padding: 7px 24px 7px 10px; border-radius: 999px; white-space: nowrap;
+  background: linear-gradient(180deg, #F75A93, var(--pink)); color: #fff; text-decoration: none;
+  box-shadow: 0 5px 0 var(--pink-dk), 0 14px 26px rgba(120, 30, 70, .35);
+  animation: nudge-hop 2.8s ease-in-out .8s infinite;
+}
+.nudge::after { /* ring that pulses out of the button */
+  content: ''; position: absolute; inset: -3px; border-radius: inherit; pointer-events: none;
+  border: 3px solid var(--pink); opacity: 0; animation: ring 2.8s ease-out .8s infinite;
+}
+.nudge-boat { width: 54px; height: 50px; flex: none; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .2)); animation: bob 1.8s ease-in-out infinite alternate; }
+.nudge-text b { display: block; font-family: var(--font-title); font-weight: 400; font-size: 23px; line-height: 1; }
+.nudge-text small { display: block; margin-top: 2px; font-size: 13px; font-weight: 800; opacity: .95; }
+.nudge-close {
+  position: absolute; top: -10px; right: -8px; width: 28px; height: 28px; border-radius: 50%;
+  border: 0; cursor: pointer; background: #fff; color: var(--ink); font-size: 18px; font-weight: 800; line-height: 1;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, .2);
+}
+@keyframes nudge-hop {
+  0%, 66%, 100% { translate: 0 0; }
+  73% { translate: 0 -13px; }
+  80% { translate: 0 0; }
+  86% { translate: 0 -5px; }
+  92% { translate: 0 0; }
+}
+.nudge-on .toast { bottom: calc(92px + env(safe-area-inset-bottom)); }
+
 /* ---------- wave transition between sections ---------- */
 .tide { position: fixed; inset: 0; z-index: 50; pointer-events: none; overflow: hidden; visibility: hidden; }
 .tide.run { visibility: visible; }
@@ -674,8 +739,44 @@ a { color: var(--teal-dk); }
 .tide-water::before, .tide-water::after { content: ''; position: absolute; left: 0; width: 100%; background: url(assets/sea/foam.svg?v=3) 0 0 / 600px 100% repeat-x; }
 .tide-water::before { top: -70px; height: 120px; transform: scaleY(-1); } /* foamy crest leading the wave */
 .tide-water::after { bottom: -60px; height: 110px; }                   /* foam trailing behind it */
-.tide-crest { position: absolute; left: 0; width: 100%; bottom: calc(100% + 18px); filter: drop-shadow(0 -4px 6px rgba(20, 90, 140, .15)); }
+.tide-crest { position: absolute; left: 50%; width: max(100%, 720px); max-width: none; translate: -50% 0; bottom: calc(100% + 18px); filter: drop-shadow(0 -4px 6px rgba(20, 90, 140, .15)); }
 section:focus, header:focus { outline: none; }
+
+/* ---------- visible "working on it" states ---------- */
+/* thin rainbow bar at the very top while the page talks to the sheet */
+.netbar {
+  position: fixed; top: 0; left: 0; right: 0; height: 4px; z-index: 80; pointer-events: none;
+  background: linear-gradient(90deg, var(--pink), var(--yellow), var(--teal), var(--purple), var(--pink)) 0 0 / 200% 100%;
+  opacity: 0; transition: opacity .25s;
+  animation: netbar 1.1s linear infinite !important;
+}
+.net-busy .netbar { opacity: 1; }
+@keyframes netbar { to { background-position: -200% 0; } }
+.spin {
+  display: inline-block; width: 1em; height: 1em; margin-right: 8px; vertical-align: -2px; flex: none;
+  border: 2.5px solid currentColor; border-right-color: transparent; border-radius: 50%;
+  animation: spin .7s linear infinite !important;
+}
+@keyframes spin { to { rotate: 360deg; } }
+/* a button waiting for the sheet: greys out, a shine runs across it */
+.btn.is-busy, .link.is-busy {
+  cursor: progress; pointer-events: none; opacity: 1;
+}
+.btn.is-busy {
+  --bg: #A9A2A8; --bd: #857E84; color: #fff; overflow: hidden; position: relative;
+  transform: none; filter: none;
+}
+.btn.is-busy::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, .55) 50%, transparent 80%) -150% 0 / 60% 100% no-repeat;
+  animation: shimmer 1.2s ease-in-out infinite !important;
+}
+@keyframes shimmer { to { background-position: 250% 0; } }
+.link.is-busy { text-decoration: none; color: var(--ink-soft); }
+.gift.is-saving { transform: none; }
+.gift.is-saving .gift-art, .gift.is-saving .gift-body > :not(.gift-action) { opacity: .55; transition: opacity .2s; }
+form.sending .field, form.sending .steppers, form.sending .sell { opacity: .55; pointer-events: none; transition: opacity .2s; }
+.gifts .empty .spin { color: var(--pink); }
 
 /* ---------- toast / confetti ---------- */
 .toast {
@@ -705,7 +806,7 @@ section:focus, header:focus { outline: none; }
   .sea { min-height: 120px; padding: 104px 0 132px; }
   .boats { --bw: 86px; }
   .boats:not(.docked) .boat { left: calc(var(--mx) - var(--w) / 2); top: calc(var(--my) - var(--w) * .467); }
-  .boats.docked { --bw: calc((100vw - 8px) / 5.3); --gap: 0px; height: 80px; }
+  .boats.docked { --bw: calc((100vw - 24px) / 5.45); --gap: 1px; height: 78px; }
   .boats.docked .boat span { font-size: calc(var(--w) * .19); }
   .boats.docked .boat-long span { font-size: calc(var(--w) * .122); }
   html { scroll-padding-top: 88px; }
@@ -725,6 +826,8 @@ section:focus, header:focus { outline: none; }
   .shore-papers { width: 110px; right: -26px; bottom: 0; }
   .section { padding: 54px 0; }
   .rsvp-grid { grid-template-columns: 1fr; gap: 26px; }
+  .form { padding: 24px 18px 22px; }
+  .field input::placeholder { font-size: 14px; }
   .crab { width: 86px; right: -10px; bottom: -34px; }
   .rsvp-umbrella { width: 100px; right: -20px; top: 6px; }
   .rsvp-shell, .rsvp-star { display: none; }

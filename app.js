@@ -83,7 +83,8 @@
   }
   async function washTo(target) {
     if (tideBusy) return;
-    if (reduceMotion || !water.animate) { jumpTo(target); return; }
+    // a short, tap-triggered transition: it plays even with reduced motion, as the family asked
+    if (!water.animate) { jumpTo(target); return; }
     tideBusy = true;
     tide.classList.add('run');
     try {
@@ -287,11 +288,49 @@
     };
   }
 
-  const api = CFG.apiUrl ? remoteApi(CFG.apiUrl) : demoApi();
+  const rawApi = CFG.apiUrl ? remoteApi(CFG.apiUrl) : demoApi();
+
+  // Every request to the sheet is visible: a moving bar at the top while anything is in flight,
+  // and a hint if saving takes long, so nobody taps twice.
+  let inflight = 0;
+  function track(promise, slowHint) {
+    inflight++;
+    document.documentElement.classList.add('net-busy');
+    const slow = slowHint && setTimeout(() => toast('Still saving — slow connection, please wait…'), 6000);
+    return promise.finally(() => {
+      clearTimeout(slow);
+      if (--inflight === 0) document.documentElement.classList.remove('net-busy');
+    });
+  }
+  const api = {
+    demo: rawApi.demo,
+    load: () => track(rawApi.load(), false),
+    send: (action, data) => track(rawApi.send(action, data), true),
+  };
+
+  // A button that is waiting for the sheet: greyed out, shimmering, with a spinner and a label.
+  function setBusy(btn, label) {
+    if (!btn) return;
+    if (label) {
+      btn.dataset.idle = btn.innerHTML;
+      btn.disabled = true;
+      btn.classList.add('is-busy');
+      btn.setAttribute('aria-busy', 'true');
+      btn.innerHTML = `<span class="spin" aria-hidden="true"></span>${label}`;
+    } else if (btn.dataset.idle !== undefined) {
+      btn.disabled = false;
+      btn.classList.remove('is-busy');
+      btn.removeAttribute('aria-busy');
+      btn.innerHTML = btn.dataset.idle;
+      delete btn.dataset.idle;
+    }
+  }
+  const busyGifts = new Map(); // gift id -> "Saving…" / "Undoing…", kept across re-renders
 
   // ================= state & rendering =================
 
   let state = null;
+  let updateNudge = () => {};
   let editing = false;
   let sortDir = store.get('acs-sort') === 'desc' ? 'desc' : 'asc';
 
@@ -352,6 +391,7 @@
     done.hidden = !showDone;
     // stop the "Are you coming?" nudging once this guest has answered
     document.documentElement.classList.toggle('rsvp-done', !!me);
+    updateNudge();
     $('.btn-call').innerHTML = me ? "You're on the guest list <span aria-hidden=\"true\">♥</span>" : "Let us know you're coming <span aria-hidden=\"true\">♥</span>";
     if (!me) return;
     store.set('acs-name', me.name);
@@ -389,8 +429,9 @@
     if (data.kids + data.adults < 1) { formMsg('How many people are coming?'); return; }
     formMsg('');
     const btn = form.querySelector('[type=submit]');
-    btn.disabled = true;
-    btn.textContent = 'Sending…';
+    if (btn.classList.contains('is-busy')) return;
+    setBusy(btn, 'Sending…');
+    form.classList.add('sending');
     try {
       const s = await api.send('rsvp', data);
       if (s.error) throw new Error(s.error);
@@ -402,8 +443,8 @@
       console.error(err);
       formMsg("Couldn't send. Please check your internet and try again.");
     } finally {
-      btn.disabled = false;
-      btn.textContent = "We'll be there! ♥";
+      setBusy(btn);
+      form.classList.remove('sending');
     }
   });
 
@@ -416,7 +457,9 @@
   });
 
   $('#rsvp-cancel').addEventListener('click', async () => {
-    if (!confirm("Sad! Remove your answer?")) return;
+    const btn = $('#rsvp-cancel');
+    if (btn.classList.contains('is-busy') || !confirm("Sad! Remove your answer?")) return;
+    setBusy(btn, 'Removing…');
     try {
       const s = await api.send('cancel_rsvp', {});
       editing = false;
@@ -425,6 +468,8 @@
     } catch (err) {
       console.error(err);
       toast("Couldn't save. Please try again.");
+    } finally {
+      setBusy(btn);
     }
   });
 
@@ -445,11 +490,14 @@
     const shopName = /amazon\./i.test(g.link || '') ? 'Amazon' : 'the shop';
     const shop = safeUrl(g.link)
       ? `<a class="btn btn-ghost btn-sm" href="${esc(g.link)}" target="_blank" rel="noopener">See on ${shopName} <span aria-hidden="true">↗</span></a>` : '';
-    const action = g.mine
+    const busy = busyGifts.get(g.id);
+    const action = busy
+      ? `<button class="btn btn-teal btn-sm is-busy" type="button" disabled aria-busy="true"><span class="spin" aria-hidden="true"></span>${busy}</button>`
+      : g.mine
       ? `<p class="status mine-msg">You're bringing this ♥ <button class="link" type="button" data-release="${esc(g.id)}">undo</button></p>`
       : `<button class="btn btn-teal btn-sm" type="button" data-take="${esc(g.id)}">I'll bring it ♥</button>`;
     const rot = [-1.5, 1.2, -0.6, 1.8, -1.1, 0.7][idx % 6];
-    return `<li class="gift${g.mine ? ' is-taken is-mine' : ''}" style="--rot:${rot}deg;--tape:${TAPES[idx % TAPES.length]}">
+    return `<li class="gift${g.mine ? ' is-taken is-mine' : ''}${busy ? ' is-saving' : ''}" style="--rot:${rot}deg;--tape:${TAPES[idx % TAPES.length]}">
       <div class="gift-art${safeUrl(g.image) ? ' photo' : ''}" style="--t:${TILES[idx % TILES.length]}">${art}${g.mine ? '<span class="stamp">Yours!</span>' : ''}</div>
       ${price}
       <div class="gift-body">
@@ -461,7 +509,7 @@
     </li>`;
   }
 
-  // Kinds of presents and budgets for the filter chips (a gift can have several kinds).
+  // Kinds of presents for the filter chips (a gift can have several kinds).
   const CATS = [
     { id: 'drawing', label: 'Drawing & colouring', short: 'Drawing', c: '#F0407F' },
     { id: 'building', label: 'LEGO & blocks', short: 'LEGO & blocks', c: '#FF8A2A' },
@@ -472,29 +520,15 @@
     { id: 'decor', label: 'For her room', short: 'Room', c: '#FF6F61' },
   ];
   const CAT = Object.fromEntries(CATS.map(c => [c.id, c]));
-  const BUDGETS = [
-    { id: 'any', label: 'Any price' },
-    { id: 'u10', label: 'Up to €10', max: 10 },
-    { id: 'u20', label: '€10–20', min: 10, max: 20 },
-    { id: 'u30', label: '€20–30', min: 20, max: 30 },
-    { id: 'o30', label: '€30+', min: 30 },
-  ];
   const tagsOf = g => String(g.tags || '').split(',').map(t => t.trim()).filter(t => CAT[t]);
-  let catFilter = 'all', budgetFilter = 'any', expanded = false;
+  let catFilter = 'all', expanded = false;
   const inCat = (g, c = catFilter) => c === 'all' || tagsOf(g).includes(c);
-  const inBudget = (g, id = budgetFilter) => {
-    const b = BUDGETS.find(x => x.id === id), p = priceOf(g);
-    if (!b || b.id === 'any') return true;
-    if (p === null) return false;
-    return (b.min === undefined || p >= b.min) && (b.max === undefined || p < b.max);
-  };
 
   function renderFilters(pool) {
-    const chip = (kind, id, label, n, color) =>
-      `<button type="button" class="fchip" data-${kind}="${id}" aria-pressed="${(kind === 'cat' ? catFilter : budgetFilter) === id}"${color ? ` style="--c:${color}"` : ''}${n === 0 ? ' disabled' : ''}>${label}<span class="n">${n}</span></button>`;
-    $('#gift-cats').innerHTML = chip('cat', 'all', 'All', pool.filter(g => inBudget(g)).length) +
-      CATS.map(c => chip('cat', c.id, c.label, pool.filter(g => inCat(g, c.id) && inBudget(g)).length, c.c)).join('');
-    $('#gift-budget').innerHTML = BUDGETS.map(b => chip('budget', b.id, b.label, pool.filter(g => inCat(g) && inBudget(g, b.id)).length)).join('');
+    const chip = (id, label, n, color) =>
+      `<button type="button" class="fchip" data-cat="${id}" aria-pressed="${catFilter === id}"${color ? ` style="--c:${color}"` : ''}${n === 0 ? ' disabled' : ''}>${label}<span class="n">${n}</span></button>`;
+    $('#gift-cats').innerHTML = chip('all', 'All', pool.length) +
+      CATS.map(c => chip(c.id, c.label, pool.filter(g => inCat(g, c.id)).length, c.c)).join('');
   }
 
   // Two rows by default, the rest behind "Show all".
@@ -514,7 +548,7 @@
   function renderGifts() {
     const gifts = state.gifts;
     const pool = gifts.filter(g => !g.taken || g.mine);
-    const shown = pool.filter(g => inCat(g) && inBudget(g)).sort((a, b) => {
+    const shown = pool.filter(g => inCat(g)).sort((a, b) => {
       if (a.mine !== b.mine) return a.mine ? -1 : 1; // your own pick first
       const pa = priceOf(a), pb = priceOf(b);
       if (pa === null || pb === null) return (pa === null) - (pb === null); // no price → last
@@ -522,7 +556,7 @@
     });
     renderFilters(pool);
     const free = gifts.filter(g => !g.taken).length;
-    const filtered = catFilter !== 'all' || budgetFilter !== 'any';
+    const filtered = catFilter !== 'all';
     $('#gift-tally').textContent = !gifts.length ? ''
       : filtered ? `Showing ${shown.length} of ${free} presents left to pick`
       : `${free} ${free === 1 ? 'present' : 'presents'} left to pick`;
@@ -533,10 +567,9 @@
   }
 
   $('.toolbar').addEventListener('click', e => {
-    const c = e.target.closest('[data-cat]'), b = e.target.closest('[data-budget]');
-    if (!c && !b) return;
-    if (c) catFilter = c.dataset.cat;
-    if (b) budgetFilter = b.dataset.budget;
+    const c = e.target.closest('[data-cat]');
+    if (!c) return;
+    catFilter = c.dataset.cat;
     if (state) renderGifts();
   });
   $('#gift-more').addEventListener('click', () => {
@@ -562,33 +595,38 @@
   $('#gifts').addEventListener('click', e => {
     const take = e.target.closest('[data-take]');
     const release = e.target.closest('[data-release]');
-    if (take) takeGift(take.dataset.take, take);
-    if (release) releaseGift(release.dataset.release, release);
+    if (take) takeGift(take.dataset.take);
+    if (release) releaseGift(release.dataset.release);
   });
 
-  async function takeGift(id, btn) {
-    btn.disabled = true;
-    btn.textContent = 'Saving…';
+  async function takeGift(id) {
+    if (busyGifts.has(id)) return;
+    busyGifts.set(id, 'Saving…');
+    renderGifts();
     try {
       const s = await api.send('take', { id });
       apply(s);
       if (s.error === 'taken') toast('Oops, someone just picked it. Choose another one? ♥');
       else if (s.error) toast("Couldn't save. Please try again.");
       else {
-        const card = $(`[data-release="${CSS.escape(id)}"]`)?.closest('.gift');
-        if (card) card.classList.add('just-taken');
         confetti();
         toast('Thank you! Aglaia will love it ♥');
       }
     } catch (err) {
       console.error(err);
       toast("Couldn't save. Check your internet and try again.");
+    } finally {
+      busyGifts.delete(id);
+      const card = $(`[data-release="${CSS.escape(id)}"]`)?.closest('.gift');
       renderGifts();
+      if (card) $(`[data-release="${CSS.escape(id)}"]`)?.closest('.gift')?.classList.add('just-taken');
     }
   }
 
-  async function releaseGift(id, btn) {
-    btn.disabled = true;
+  async function releaseGift(id) {
+    if (busyGifts.has(id)) return;
+    busyGifts.set(id, 'Undoing…');
+    renderGifts();
     try {
       const s = await api.send('release', { id });
       apply(s);
@@ -596,8 +634,83 @@
     } catch (err) {
       console.error(err);
       toast("Couldn't undo. Check your internet and try again.");
-      btn.disabled = false;
+    } finally {
+      busyGifts.delete(id);
+      renderGifts();
     }
+  }
+
+  // Photo strips: on phones one photo at a time with ‹ › arrows and dots (CSS hides them on desktop).
+  function setupCarousels() {
+    $$('.gallery').forEach(g => {
+      const all = $$('.polaroid', g);
+      if (all.length < 2) return;
+      const slides = () => all.filter(el => el.offsetParent !== null);
+      const box = document.createElement('div');
+      box.className = 'carousel';
+      g.before(box);
+      box.append(g);
+      const btn = (cls, label, d) => {
+        const b = Object.assign(document.createElement('button'), { type: 'button', className: `car-btn ${cls}`, ariaLabel: label });
+        b.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}"/></svg>`;
+        return b;
+      };
+      const prev = btn('car-prev', 'Previous photo', 'M15 5l-7 7 7 7'), next = btn('car-next', 'Next photo', 'M9 5l7 7-7 7');
+      const dots = document.createElement('div');
+      dots.className = 'car-dots';
+      all.forEach((el, i) => dots.append(Object.assign(document.createElement('button'), { type: 'button', ariaLabel: `Photo ${i + 1}`, className: el.classList.contains('only-phone') ? 'only-phone' : '' })));
+      box.append(prev, next, dots);
+      const centerOf = el => el.offsetLeft + el.offsetWidth / 2;
+      const current = () => {
+        const items = slides(), mid = g.scrollLeft + g.clientWidth / 2;
+        return items.reduce((best, el, i) => Math.abs(centerOf(el) - mid) < Math.abs(centerOf(items[best]) - mid) ? i : best, 0);
+      };
+      const go = i => {
+        const items = slides();
+        const el = items[Math.max(0, Math.min(items.length - 1, i))];
+        g.scrollTo({ left: centerOf(el) - g.clientWidth / 2, behavior: reduceMotion ? 'auto' : 'smooth' });
+      };
+      const sync = () => {
+        const i = current();
+        $$('button', dots).filter(d => d.offsetParent !== null).forEach((d, j) => d.setAttribute('aria-current', String(i === j)));
+        prev.disabled = i === 0;
+        next.disabled = i === slides().length - 1;
+      };
+      prev.addEventListener('click', () => go(current() - 1));
+      next.addEventListener('click', () => go(current() + 1));
+      $$('button', dots).forEach(d => d.addEventListener('click', () => go($$('button', dots).filter(x => x.offsetParent !== null).indexOf(d))));
+      let t;
+      g.addEventListener('scroll', () => { clearTimeout(t); t = setTimeout(sync, 60); }, { passive: true });
+      sync();
+    });
+  }
+
+  // "Are you coming?" reminder: pops up once the hero button is scrolled past,
+  // hides near the form, after answering, or when closed with ×.
+  function setupNudge() {
+    const wrap = $('.nudge-wrap'), link = $('.nudge', wrap), close = $('.nudge-close', wrap);
+    let heroBtnPassed = false, rsvpVisible = false, dismissed = false;
+    updateNudge = () => {
+      const show = !!state && !dismissed && heroBtnPassed && !rsvpVisible && !(state.me && state.me.rsvp);
+      wrap.classList.toggle('show', show);
+      document.documentElement.classList.toggle('nudge-on', show);
+      wrap.setAttribute('aria-hidden', String(!show));
+      link.tabIndex = close.tabIndex = show ? 0 : -1;
+    };
+    // checked on every scroll, so it also works after a boat jump that skips past the button
+    let ticking = false;
+    const check = () => {
+      ticking = false;
+      heroBtnPassed = $('.btn-call').getBoundingClientRect().bottom < 0;
+      const r = $('#rsvp').getBoundingClientRect();
+      rsvpVisible = r.top < innerHeight * .75 && r.bottom > innerHeight * .2;
+      updateNudge();
+    };
+    const onScroll = () => { if (!ticking) { ticking = true; setTimeout(check, 80); } };
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll);
+    check();
+    close.addEventListener('click', () => { dismissed = true; updateNudge(); });
   }
 
   // ================= start =================
@@ -605,6 +718,8 @@
   if (api.demo) $('#demo-banner').hidden = false;
   watchScroll();
   revealOnScroll();
+  setupNudge();
+  setupCarousels();
   countdown();
   setupCalendar();
   syncSort();
